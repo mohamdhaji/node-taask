@@ -2,7 +2,6 @@ const path = require("path");
 
 const express = require("express");
 
-
 const router = express.Router();
 const User = require("../models/user");
 const createUser = require("../models/user");
@@ -21,7 +20,6 @@ router.post("/register-user", (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
-  
   const user = new User(firstName, lastName, email, password);
   const register = user.save();
   if (register) res.redirect("/");

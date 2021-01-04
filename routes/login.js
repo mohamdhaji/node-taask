@@ -19,39 +19,29 @@ router.post("/login-user", (req, res, next) => {
 
   const sql = "SELECT * FROM users WHERE users.email = ?";
   db.query(sql, [email], (err, rows) => {
-    if (err) return false;
     const user = rows[0];
-    if (!user) res.status(400).json({ message: "you are not registered" });
+    console.log(user)
+    if (!user) return res.status(400).json({ message: "you are not registered" });
     if (user.password == password) {
-      // res.cookie("isLoggedIn", true);
-      // res.cookie("user", user);
+      req.session.email = user.email;
+      req.session.firstName = user.firstName;
+      req.session.lastName = user.lastName;
+      req.session.isLoggedin = true;
+      res.redirect("/profile");
 
-      res.render("profile", {
-        user: user,
-        pageTitle: "user profile",
-        path: "profile",
-      });
     } else {
       return res.json({ loginSuccess: false, message: "Wrong password" });
     }
   });
-  // console.log(user);
-  // if (!user) res.status(400).json({ message: "you are not registered" });
-  // if (user.password == password) {
-  //   req.session.isLoggedIn = true;
-  //   req.session.user = user;
-  //   console.log("loggedIn");
-  //   req.session.save((err) => {
-  //     res.render("user/profile", {
-  //       user: user,
-  //       pageTitle: "user profile",
-  //       path: "/user/profile",
-  //     });
-  //   });
-  // } else {
-  //   console.log("oh");
-  //   return res.json({ loginSuccess: false, message: "Wrong password" });
-  // }
+});
+
+router.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return console.log(err);
+    }
+    res.redirect("/");
+  });
 });
 
 module.exports = router;

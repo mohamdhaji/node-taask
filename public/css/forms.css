@@ -144,3 +144,11 @@ REGISTER LOGIN
 .form_block_two .block:nth-child(2) {
   padding-left: 10px;
 }
+
+.btn-default {
+  text-transform: uppercase;
+  padding: 10px;
+  display: table;
+  background: #e1ddc3;
+  margin-top: 10px;
+}

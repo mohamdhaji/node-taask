@@ -5,7 +5,11 @@
       </div>
       <div class="right">
         <div class="top"><a class="<%= path === '/' ? 'active' : '' %>" href="/">Login</a></div>
-        <div class="bottom"><a class="<%= path === '/register' ? 'active' : '' %>" href="/register">Register</a></div>
+        <div class="bottom" style="text-align: right;">
+          <span ><a class="<%= path === '/register' ? 'active' : '' %>" href="/register">Register</a></span>
+          <span ><a class="<%= path === '/profile' ? 'active' : '' %>" href="/profile">Profile</a></span>
+
+        </div>
       </div>
     </div>
   </header>
