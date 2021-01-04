@@ -1,5 +1,6 @@
 const express = require("express");
 const db = require("../util/database");
+const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 
@@ -49,16 +50,30 @@ router.post("/updateProfile", (req, res, next) => {
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const password = req.body.password;
-    const email=req.session.email;
-    const sql =
-      "UPDATE users SET firstName= ?,lastName= ? , password= ? WHERE users.email = ?";
-    db.query(sql, [firstName, lastName, password,email], (err) => {
-      if (err) return res.json({ message: "update went wrong" });
+    const email = req.session.email;
 
-      req.session.firstName = firstName;
-      req.session.lastName = lastName;
-      res.redirect("/profile");
-    });
+    if (!firstName || !lastName || !password)
+      return res.json({ message: "please fill all fields" });
+
+    return bcrypt
+      .hash(password, 12)
+      .then((hashedPassword) => {
+        const sql =
+          "UPDATE users SET firstName= ?,lastName= ? , password= ? WHERE users.email = ?";
+        db.query(sql, [firstName, lastName, hashedPassword, email], (err) => {
+          if (err) return res.json({ message: "update went wrong" });
+        });
+      })
+      .then(() => {
+        req.session.firstName = firstName;
+        req.session.lastName = lastName;
+        res.redirect("/profile");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    return res.json({ message: "please Login first" });
   }
 });
 module.exports = router;
